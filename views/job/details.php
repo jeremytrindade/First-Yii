@@ -1,6 +1,7 @@
 <a href="/index.php?r=job">Back to Jobs</a>
 <h2 class="page-header">
-    <?=$job->title;?> <small>in <?= $job->city;?>, <?= $job->state;?></small></h2>
+    <?=$job->title;?> <small>in <?= $job->city;?>, <?= $job->state;?></small>
+    <span class="pull-right"><a href="index.php?r=job/edit&id=<?=$job->id;?>" class="btn btn-default">Edit</a><a href="index.php?r=job/delete&id=<?=$job->id;?>" class="btn btn-danger">Delete</a></span></h2>
 <?php if(!empty($job->description)):?>
     <div class="well">
         <h4>Job Description</h4>
