@@ -2,12 +2,29 @@
 
 namespace app\controllers;
 
-class JobController extends \yii\web\Controller
-{
+
+use Yii;
+use yii\web\Response;
+use yii\web\Controller;
+use app\models\Category;
+use app\models\Job;
+use yii\data\Pagination;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+
+class JobController extends \yii\web\Controller{
+    
+    public function actionDetails($id)
+    {
+        // Get Job
+        $job = Job::find()
+                    ->where(['id'=>$id])
+                    ->one();
+        return $this->render('details', ['job'=>$job]);
+    }
     public function actionCreate()
     {
-        $foo='Bar';
-        return $this->render('create',['foo'=>$foo]);
+        return $this->render('create');
     }
 
     public function actionDelete()
@@ -22,7 +39,23 @@ class JobController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        // Create Query
+        $query = Job::find();
+        
+        $pagination = new Pagination([
+            'defaultPageSize' => 20,
+            'totalCount'=>$query->count()
+        ]);
+
+        $jobs = $query->orderBy('create_date DESC')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('index', [
+            'jobs' => $jobs,
+            'pagination' => $pagination
+        ]);
     }
 
 }
