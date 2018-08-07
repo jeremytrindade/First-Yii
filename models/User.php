@@ -18,15 +18,16 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return array the validation rules.
      */
-    public function rules(){
+    public function rules()
+    {
         return[
             // name, email, subject and body are required
-            [['full_name', 'email', 'username', 'password', 'password_repeat'],
+            [['full_name', 'email', 'username', 'password', 'password_repeat'],'required'],
             // email has to be valid email address
             ['email', 'email'],
             // Compare passwords
             ['password_repeat', 'compare', 'compareAttribute'=>'password'],
-        ]];
+        ];
     }
 
     /**
@@ -74,5 +75,17 @@ class User extends ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->getAuthKey() === $authKey;
+    }
+    public function beforeSave($insert){
+        if(parent::beforeSave($insert)){
+            if($this->isNewRecord){
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+            }
+            if(isset($this->password)){
+                $this->password=md5($this->password);
+                return parent::beforeSave($insert);
+            }
+        }
+        return true;
     }
 }

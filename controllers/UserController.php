@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use yii\web\controller;
+use yii\web\Controller;
 use app\models\User;
 
 class UserController extends \yii\web\Controller
@@ -12,9 +12,10 @@ class UserController extends \yii\web\Controller
     {
         return $this->render('login');
     }
-
+ 
     public function actionRegister()
     {
+        
         $user = new User();
 
         if ($user->load(Yii::$app->request->post())) {
@@ -33,5 +34,6 @@ class UserController extends \yii\web\Controller
             'user' => $user,
         ]);
     }
+        
 
 }
