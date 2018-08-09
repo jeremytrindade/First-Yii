@@ -14,6 +14,25 @@ use yii\filters\AccessControl;
 
 class JobController extends \yii\web\Controller{
     
+    /**
+     * Access Control
+     */
+    public function behaviors(){
+        return[
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['create', 'edit', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['create', 'edit', 'delete'],
+                    'allow' => true,
+                    'roles' => ['@'],
+                    ],
+                ],
+            ]
+        ];
+    }
+
     public function actionDetails($id)
     {
         // Get Job
@@ -48,6 +67,12 @@ class JobController extends \yii\web\Controller{
     {
         $job = Job::findOne($id);
 
+        // Check For Owner
+        if(Yii::$app->user->identity->id != $job->user_id){
+            // Redirect
+            return $this->redirect('index.php?r=job');
+        }
+
         $job->delete();
 
         // Show Message
@@ -60,6 +85,12 @@ class JobController extends \yii\web\Controller{
     public function actionEdit($id)
     {
         $job = Job::findOne($id);
+
+        // Check For Owner
+        if(Yii::$app->user->identity->id != $job->user_id){
+            // Redirect
+            return $this->redirect('index.php?r=job');
+        }
 
         if ($job->load(Yii::$app->request->post())) {
             if ($job->validate()) {

@@ -72,7 +72,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->password === md5($password);
     }
 
-    public function findByUsername($username){
+    public static function findByUsername($username){
         return User::findOne(['username' => $username]);
     }
     /**
